@@ -1,2 +1,0 @@
-# OligoFast
-OligoFast R package
