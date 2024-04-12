@@ -27,9 +27,9 @@
     <img src="img/logo_oligofast_resized_400px.png" alt="Logo" width="200" height="200">
   </a>
 
-<h3 align="center">OligoFast R package</h3>
-<h4 align="center">Your R companion to design primers couples for various projects! \n
-This is the first release, Beta-test version</4> 
+<h2 align="center">OligoFast R package</h2>
+<h4 align="center">Your R companion to design primers couples for various projects!</h4>
+<h4 align="center">This is the first release and Beta-test version of the package</h4> 
   <p align="center">
     <br />
     <a href="https://caninuzzo.github.io/OligoFast/"><strong>The complete package description and tutorial is available here!</strong></a>
