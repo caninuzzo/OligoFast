@@ -17,8 +17,6 @@
 *** See the bottom of this document for the declaration of the reference variables
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-[![MIT License][license-shield]][license-url]
 
 
 
@@ -26,11 +24,12 @@
 <br />
 <div align="center">
   <a href="https://github.com/caninuzzo/OligoFast">
-    <img src="img/logo_oligofast_resized_400px.png" alt="Logo" width="80" height="80">
+    <img src="img/logo_oligofast_resized_400px.png" alt="Logo" width="200" height="200">
   </a>
 
 <h3 align="center">OligoFast R package</h3>
-
+<h4 align="center">Your R companion to design primers couples for various projects! \n
+This is the first release, Beta-test version</4> 
   <p align="center">
     <br />
     <a href="https://caninuzzo.github.io/OligoFast/"><strong>The complete package description and tutorial is available here!</strong></a>
