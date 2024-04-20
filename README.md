@@ -39,10 +39,3 @@
 
 <!-- DOI -->
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.11001268.svg)](https://doi.org/10.5281/zenodo.11001268)
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
