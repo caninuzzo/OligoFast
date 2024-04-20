@@ -3,9 +3,11 @@
 
 <!-- PROJECT LOGO -->
 
-<img src="img/logo_oligofast_resized_400px.png" alt="Logo" width="200" height="200" align="left">
 
 # OligoFast R package
+
+<img src="img/logo_oligofast_resized_400px.png" alt="Logo" width="200" height="200" align="left">
+
 Your R companion to design primers couples for various projects!
 
 **This is the first release and Beta-test version of the package.**
