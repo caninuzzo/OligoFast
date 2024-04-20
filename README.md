@@ -29,11 +29,10 @@
 
 <h2 align="center">OligoFast R package</h2>
 <h4 align="center">Your R companion to design primers couples for various projects!</h4>
-<h4 align="center">This is the first release and Beta-test version of the package</h4> 
-  <p align="center">
-    <br />
+<h4 align="center">This is the first release and Beta-test version of the package.</h4> 
+<h4 align="center">
     <a href="https://caninuzzo.github.io/OligoFast/"><strong>The complete package description and tutorial is available here!</strong></a>
-    <br />
+</h4>
 </div>
 
 
