@@ -14,7 +14,7 @@ Your R companion to design primers couples for various projects!
 
 
 The main goal of `OligoFast` package is to provide an easy way to design primers couples in R for various projects.  
-It also enables to test the primers couples on datasets and to conduct in silico investigations before to move into the laboratory.
+It also enables to test the primers couples on datasets and to conduct *in silico* investigations before to move into the laboratory.
 
 
 
@@ -28,7 +28,7 @@ devtools::install_github("https://github.com/caninuzzo/OligoFast")
 
 ## Tutorial
 
-The complete package description and tutorial is available <a href="https://caninuzzo.github.io/OligoFast/"><strong> here!</strong></a>
+The complete package description and tutorial is available <a href="https://caninuzzo.github.io/OligoFast/"><strong>here!</strong></a>
 
 
 ## Citation
