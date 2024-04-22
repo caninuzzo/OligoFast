@@ -26,6 +26,17 @@ To install the package `OligoFast` you need `devtools` package on R, then use:
 devtools::install_github("https://github.com/caninuzzo/OligoFast")
 ```
 
+If the installation failed with the following error: "HTTP error 403. API rate limit exceeded (...)", then follow the
+instruction on the console:
+``` r
+usethis::create_github_token()
+# for that you need a github account
+usethis::edit_r_environ()
+# in the file .Renviron (hidden) add the following line: GITHUB_PAT=token (where token is the token given in github using the previous line)
+```
+After running that, save .Renviron, restart R, and use devtools::install_github() function again.
+
+
 ## Tutorial
 
 The complete package description and tutorial is available <a href="https://caninuzzo.github.io/OligoFast/"><strong>here!</strong></a>
