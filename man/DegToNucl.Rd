@@ -6,8 +6,15 @@
 \usage{
 DegToNucl(x)
 }
+\arguments{
+\item{x}{(mandatory) an oligonucleotide or sequence (character)}
+}
+\value{
+The 'fraction of real nucleotides' related to the given degenerated nucleotide.
+}
 \description{
 This function should not be used by an user, but it is required for BuildConsensus() function.
 Indeed, when a degenerated nucleotide is found in a sequence, it is associated to a corresponding score
 for the observation frequency matrix.
+Calculate Degenerescence Score
 }
