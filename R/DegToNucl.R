@@ -3,8 +3,11 @@
 #' This function should not be used by an user, but it is required for BuildConsensus() function.
 #' Indeed, when a degenerated nucleotide is found in a sequence, it is associated to a corresponding score
 #' for the observation frequency matrix.
+#' Calculate Degenerescence Score
 
-# lack the @export to hide the function to users.
+#' @param x (mandatory) an oligonucleotide or sequence (character)
+#' @return The 'fraction of real nucleotides' related to the given degenerated nucleotide.
+#' @export
 # When a degenerate base is found, apply its occurrence to the corresponding bases (A, T, C, G)
 DegToNucl <- function(x){
   for (n in c("W","S","R","Y","K","M","B","D","H","V","N")){
