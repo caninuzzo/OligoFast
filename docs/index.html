@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2024-04-20" />
+<meta name="date" content="2024-04-22" />
 
 <title>OligoFast package</title>
 
@@ -237,7 +237,7 @@ div.tocify {
 
 
 <h1 class="title toc-ignore"><span style="font-size: 48px; color: #273300; font-weight: bold;">OligoFast package</span></h1>
-<h4 class="date"><span style="color: black; font-size: 12px;">2024-04-20</span></h4>
+<h4 class="date"><span style="color: black; font-size: 12px;">2024-04-22</span></h4>
 
 </div>
 
@@ -356,7 +356,7 @@ To store the outputs of the functions (what I recommend to do), you need to crea
 <p>Let's start at the beginning...<br />
 This function enables to load your FASTA dataset from your files to your R environment as a DNAStringSet object (from <em>Biostrings</em> package). If RNA sequences (U instead of T wihtin the sequences) are present in your FASTA file, then they will be converted as DNA sequences to match the DNAStringSet requirements.</p>
 <pre><code># first load the package and all the others required packages
-library(OligoFast, dependencies = TRUE)
+library(OligoFast)
 
 JellyDNA &lt;- loadFASTAasDNA(fasta = &quot;path_to/training_file/Cubozoa_and_Scyphozoa.fasta&quot;)</code></pre>
 <p>As an output, the object here called 'JellyDNA' should be in your RStudio Data environment as a DNAStringSet object.</p>
@@ -429,8 +429,10 @@ Then the different arguments are:<br />
 </div>
 <div id="perform-an-in-silico-pcr-with-a-primers-couple-on-a-list-of-dna-sequences" class="section level3">
 <h3>8. Perform an <em>in silico</em> PCR with a primers couple on a list of DNA sequences</h3>
-<p>This function aims to return the amplicon sequences resulting from the <em>in silico</em> amplification process using a given primers couple. The first argument <code>DNAList</code> should thus be your dataset of sequences, loaded in R in step 1 using <strong>loadFASTAasDNA</strong> function. Each oligonucleotide should be provided for the corresponding argument: <code>forward</code> and <code>reverse</code>. Additionally, <code>targetReg</code> can be specified as a numeric range (vector) to target a specific region in the sequences.</p>
-<pre><code>insilicoPCR(DNAList = JellyDNA, forward = JellyOligoMatched$Forward, reverse = JellyOligoMatched$Reverse, maxdiffF = 2, maxdiffR = 2)</code></pre>
+<p>This function aims to return the amplicon sequences resulting from the <em>in silico</em> amplification process using a given primers couple. The first argument <code>DNAList</code> should thus be your dataset of sequences, loaded in R in step 1 using <strong>loadFASTAasDNA</strong> function. Each oligonucleotide should be provided for the corresponding argument: <code>forward</code> and <code>reverse</code>. Additionally, <code>targetReg</code> can be specified as a numeric range (vector) to target a specific region in the sequences.<br />
+In this example, we will test the first primers couple resulting from the previous function.</p>
+<pre><code>insilicoPCR(DNAList = JellyDNA, forward = OligoResults$Forward[1], reverse = OligoResults$Reverse[1], maxdiffF = 2, maxdiffR = 2)
+</code></pre>
 <p>As an output of the function, 4 different objects are produced:<br />
 -'PCROut': a dataframe that gives details about the amplification of each sequences.<br />
 -'amplified': a DNAStringSet object that gathers the amplicons from the <em>in silico</em> amplification.<br />
