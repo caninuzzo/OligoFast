@@ -4,15 +4,25 @@
 \alias{OligoCheckR}
 \title{Check and keep similar oligonucleotides}
 \usage{
-OligoCheckR(OligoFound, filtGaps = TRUE, nOcc, plot = TRUE, outpath)
+OligoCheckR(
+  OligoFound,
+  filtGaps = TRUE,
+  pOcc = 0.9,
+  maxDeg = 1,
+  plot = TRUE,
+  outpath
+)
 }
 \arguments{
 \item{OligoFound}{(mandatory) it should be the output from OligoFindR() function, the dataframe with the oligonucleotides and their characteristics.}
 
 \item{filtGaps}{(mandatory, default: TRUE) if TRUE, the oligonucleotides with gaps are removed from the analysis.}
 
-\item{nOcc}{(mandatory) the number of times the oligonucleotide is found through the diffenrent clusters. The theorical maximum is the number of cluster
-(meaning the oligonucleotide is found everywhere and well conserved). The higher is nOcc, the stronger should be the oligonucleotide.}
+\item{pOcc}{(mandatory, default: 0.9) a threshold from 0 to 1. It is a percentage related to the number of clusters. The theorical maximum 1 means 100\% so the oligonucleotides should appears in all the clusters to be kept.
+with default setting, the oligonucleotides that appear in more than 90\% of the clusters are kept. Naturally, the higher is pOcc, the stronger should be the oligonucleotide.}
+
+\item{maxDeg}{(mandatory, default: 1) the maximum number of degenerated nucleotides allowed within the oligonucleotides.
+As a reminder, the 'degeneration degree' of the nucleotides is dependent to the threshold fixed in the previous function for the argument of the same name.}
 
 \item{plot}{(optional, default: TRUE) if TRUE, creates an overview of the most abundant oligonucleotides and their location on a graph, using ggplot2.
 The picture is a new variable created named "oligOverview" (print(oligOverview) to display it).}

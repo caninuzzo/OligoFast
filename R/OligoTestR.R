@@ -70,7 +70,8 @@ OligoTestR <- function(DNAList, PrimersCouples, mmCalc = 2, outpath) {
            fmrAmpR <- Biostrings::vmatchPattern(reverse, DNAList[fmr_amp], max.mismatch = j, fixed = F)
 
            # to avoid error if reverse match before forward :
-           startF <- (unlist(fmrAmpF@ends)-fmrAmpF@width0+1)+1
+           ### EDIT 28.05.2024 [ startF <- (unlist(fmrAmpF@ends)-fmrAmpF@width0+1)+1 ] by :
+           startF <- unlist(fmrAmpF@ends)-nchar(forward)+1
            endR <- unlist(fmrAmpR@ends)
            if (length(which(startF>endR))>0){
              fmr_amp <- fmr_amp[-which(startF>endR)]
@@ -151,11 +152,12 @@ OligoTestR <- function(DNAList, PrimersCouples, mmCalc = 2, outpath) {
 
           fmr_amp <- intersect(which(Biostrings::vcountPattern(forward, DNAList, max.mismatch = j, fixed = F)==1),which(Biostrings::vcountPattern(reverse, DNAList, max.mismatch = j, fixed = F)==1))
 
-          fmrAmpF <- Biostrings::vmatchPattern(forward, DNAList, max.mismatch = j, fixed = F)
-          fmrAmpR <- Biostrings::vmatchPattern(reverse, DNAList, max.mismatch = j, fixed = F)
+          fmrAmpF <- Biostrings::vmatchPattern(forward, DNAList[fmr_amp], max.mismatch = j, fixed = F)
+          fmrAmpR <- Biostrings::vmatchPattern(reverse, DNAList[fmr_amp], max.mismatch = j, fixed = F)
 
           # to avoid error if reverse match before forward :
-          startF <- (unlist(fmrAmpF@ends)-fmrAmpF@width0+1)+1
+### EDIT 28.05.2024 [ startF <- (unlist(fmrAmpF@ends)-fmrAmpF@width0+1)+1 ] by :
+          startF <- unlist(fmrAmpF@ends)-nchar(forward)+1
           endR <- unlist(fmrAmpR@ends)
           if (length(which(startF>endR))>0){
             fmr_amp <- fmr_amp[-which(startF>endR)]

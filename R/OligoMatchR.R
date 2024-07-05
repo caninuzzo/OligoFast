@@ -76,7 +76,7 @@ OligoMatchR <- function(OligoChecked, ampSize, target, GCtail = TRUE, outpath) {
           OligoMatched[iline+1,3] <- as.character(fmrOligoChecked$oligos[j])
           OligoMatched[iline+1,4] <- as.numeric(fmrOligoChecked$meanEndPos[j])
           OligoMatched[iline+1,5] <- ampLength
-          OligoMatched[iline+1,6] <- as.character(paste(OligoChecked$warnings[i], fmrOligoChecked$warnings[j], sep = " "))
+          OligoMatched[iline+1,6] <- as.character(paste(OligoChecked$wbs[i], fmrOligoChecked$wbs[j], sep = " "))
         }
 
         if (ReadSens > 0) {
@@ -88,7 +88,7 @@ OligoMatchR <- function(OligoChecked, ampSize, target, GCtail = TRUE, outpath) {
           OligoMatched[iline+1,3] <- as.character(OligoChecked$oligos[i])
           OligoMatched[iline+1,4] <- as.numeric(OligoChecked$meanEndPos[i])
           OligoMatched[iline+1,5] <- ampLength
-          OligoMatched[iline+1,6] <- as.character(paste(fmrOligoChecked$warnings[j], OligoChecked$warnings[i], sep = " "))
+          OligoMatched[iline+1,6] <- as.character(paste(fmrOligoChecked$wbs[j], OligoChecked$wbs[i], sep = " "))
         }
       }
     }# end j
@@ -111,7 +111,7 @@ OligoMatchR <- function(OligoChecked, ampSize, target, GCtail = TRUE, outpath) {
 
 
   # tidy up:
-  names(OligoMatched)=c("Forward","StartPos","Reverse","EndPos","AmpliconSize","warnings")
+  names(OligoMatched)=c("Forward","StartPos","Reverse","EndPos","AmpliconSize","wbs")
   # reverse complement keeping up/low cases
   OligoMatched$Reverse <- OligoFast::revCompCase(OligoMatched$Reverse)
 
