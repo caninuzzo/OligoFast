@@ -1,6 +1,6 @@
 Package: OligoFast
 Title: An Easy Way To Design And Test Primers Couples
-Version: 0.0.1
+Version: 0.1.0
 Authors@R: 
     person(given = "Alexis",  family = "CANINO",  email = "alexis.canino13@gmail.com", role = c("aut", "cre","cph"),
            comment = c(ORCID = "0009-0001-3097-3562"))
