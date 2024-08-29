@@ -45,9 +45,19 @@ If you use `OligoFast` please cite CANINO, A. (2024). R package OligoFast: prese
 
 ----
 
-## Current version: v.0.1.0
+## Current version: v.0.1.1
 
-**Modifications:**  
+**Modifications:**
+ *(v.0.1.0->v.0.1.1)*  
+After running the pipeline several times with bigger and more complex datasets, news issues were highlighted and improvements were thus made on the following functions:  
+
+- **general**: the way to call functions from other package has been modified to avoid displaying useless warnings messages when loading OligoFast.
+- **OligoFindR()**: remove a message display used only for function development.  
+- **OligoCheckR()**: due to an update, an annoying warning message should occurs within the function. It has been fixed to remove it.
+- **OligoMatchR()**: the functioning of the 'wbs' score has been revised. It is now a numeric value that can be used in an index calculation. This index is now in the output of OligoMatchR() function and allows to sort the primers couples according to their potential probablity of amplification success. It allows, when the number of primers couples found is huge, to select only the N first ones which are supposed to be the most promising and save time in the next function.
+- **OligoTestR()**: a correction has been made to avoid the occurrence of an error that block the function. Within the amplification process, the sequences presenting more than 10 consecutive 'N' matched with the primers, leading to confusions when calculating scores. Such sequences are now out of the analysis and a warning is displayed to inform about their potential presence.
+- **insilicoPCR()**: a correction has been made to avoid the occurrence of an error that block the function. As it was done for OligoTestR() function, the sequences presenting more than 10 consecutive 'N' are out of the analysis and a warning is displayed.
+
 *(v.0.0.1->v.0.1.0)*  
 After running the pipeline several times with different datasets and confronting it to a large dataset, some issues were revealed and improvements were thus made on the following functions:  
 
@@ -57,6 +67,7 @@ After running the pipeline several times with different datasets and confronting
 
 **Previous versions:**
 
+- *v.0.1.0* (current) 28.08.2024
 - *v.0.1.0* (current) 05.07.2024
 - *v.0.0.1* first release, 22.04.2024
 

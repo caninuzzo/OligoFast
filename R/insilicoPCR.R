@@ -14,7 +14,8 @@
 #' It generates as well a visual plot of the size of the amplicon: AmplifOverview.
 #' @param outpath (optional) the path to the FOLDER in which the function outputs will be stored.
 #' @return Different objects including: amplicons, non-resolutive amplicons, sequences not-amplified and a dataframe that sums up the amplification process.
-#' @import Biostrings
+#' @importFrom Biostrings vcountPattern vmatchPattern subseq DNAStringSet
+#' @importFrom dplyr intersect
 #' @import ggplot2
 #' @export
 #' @examples
@@ -30,6 +31,13 @@ insilicoPCR <- function(DNAList, forward, reverse, maxdiffF=2, maxdiffR=2, targe
 
   if (class(DNAList)!="DNAStringSet"){
     stop("Error: DNAList should be a list of DNA sequences belonging to the class DNAStringSet")
+  }
+
+  # check the presence of "NNNNNNNNNN" in sequences (10 successive N)
+  if (length(grep("NNNNNNNNNN",as.character(DNAList)))>0){
+    cat("\r", length(grep("NNNNNNNNNN",as.character(DNAList))),
+        "sequences with 10 consecutive 'N' or more were removed from the analysis.")
+    DNAList <- DNAList[-grep("NNNNNNNNNN",as.character(DNAList))]
   }
 
   cat(paste0("Performing in silico PCR with: 5'",
@@ -74,8 +82,8 @@ insilicoPCR <- function(DNAList, forward, reverse, maxdiffF=2, maxdiffR=2, targe
 
   PCROut$seq_identifier <- names(DNAList)
 
-  if (length(intersect(keeF,keeR))>0) {
-    for (e in intersect(keeF,keeR)) {
+  if (length(dplyr::intersect(keeF,keeR))>0) {
+    for (e in dplyr::intersect(keeF,keeR)) {
       if (couF[e]==1 && couR[e]==1) {
         PCROut$amplicon_size[e] <- unlist(matR@ends[e]) - (unlist(matF@ends[e])-matF@width0[e]+1) + 1
       }
@@ -102,10 +110,19 @@ insilicoPCR <- function(DNAList, forward, reverse, maxdiffF=2, maxdiffR=2, targe
   if (length(which(PCROut$amplicon_size>0))>0) {
     amplified <- NULL
     for (e in which(PCROut$amplicon_size>0)) {
-      amplified <- append(amplified,
-                          as.character(Biostrings::subseq(DNAList[[e]],
-                                              start = (unlist(matF@ends[e])-matF@width0[e]+1)+1,
-                                              end = unlist(matR@ends[e]))))
+      # when x mismatches allowed, some last nucleotides of reverse oligo can be missing at the end of the sequence
+      # deal with it without stopping the process with an error:
+      if (length(DNAList[[e]])<unlist(matR@ends[e])) {
+        amplified <- append(amplified,
+                            as.character(Biostrings::subseq(DNAList[[e]],
+                                                            start = (unlist(matF@ends[e])-matF@width0[e]+1)+1,
+                                                            end = length(DNAList[[e]]))))
+      } else {
+        amplified <- append(amplified,
+                            as.character(Biostrings::subseq(DNAList[[e]],
+                                                            start = (unlist(matF@ends[e])-matF@width0[e]+1)+1,
+                                                            end = unlist(matR@ends[e]))))
+      }
     }
     names(amplified) <- PCROut$seq_identifier[which(PCROut$amplicon_size>0)]
     amplified <- Biostrings::DNAStringSet(amplified)
@@ -127,12 +144,12 @@ insilicoPCR <- function(DNAList, forward, reverse, maxdiffF=2, maxdiffR=2, targe
       " amplicons obtained from ",
       length(DNAList),
       " sequences. [ Mean length of ",
-      round(mean(width(amplified))),
+      round(mean(amplified@ranges@width)),
       "pb, min. size: ",
-      min(width(amplified)),
+      min(amplified@ranges@width),
       "pb max. size: ",
-      max(width(amplified))),
-      "pb ]")
+      max(amplified@ranges@width),
+      "pb ]"))
 
   cat("\n Resolution of the primers couple: ",
       length(amplified)-length(non_resolutive_amplicon),

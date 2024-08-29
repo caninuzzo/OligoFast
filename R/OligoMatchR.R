@@ -8,9 +8,9 @@
 #' You should indicate the values as a numeric vector: (for example c(400,800) to target ONLY a variable region located around 400 and 800pb).
 #' @param GCtail (mandatory, default: TRUE) if TRUE then the oligonucleotides presenting 3 or more G, C (and other bases corresponding) on their last nucleotides at the 3' tail will be removed from the analysis.
 #' @param outpath (optional) the path to the FOLDER in which the function outputs will be stored.
-#' @return Another dataframe of the matching oligonucleotides couples with the given parameters. In this one, all the nucleotides are given in the 5'->3' orientation.
+#' @return Another dataframe of the matching oligonucleotides couples with the given parameters. In this one, all the nucleotides are given in the 5'->3' orientation. There are sorted in the 'probably most promising' order, according to 'occ_score' field value.
 #' @import dplyr
-#' @import stringr
+#' @importFrom stringr str_count
 #' @export
 #' @examples
 #' \dontrun{
@@ -43,7 +43,7 @@ OligoMatchR <- function(OligoChecked, ampSize, target, GCtail = TRUE, outpath) {
   OligoMatched <- data.frame()
 
   ### DEV FASTER ALTERNATIVE
-  # when i is set on one oligo, first filter all the other oligo which can math for the right size. then do the calculations (time saver)
+  # when i is set on one oligo, first filter all the other oligo which can match for the right size. then do the calculations (time saver)
   for (i in 1:nrow(OligoChecked)) {
     fmrOligoChecked <- OligoChecked[(i+1):nrow(OligoChecked),]
     fmrOligoChecked <- fmrOligoChecked %>%
@@ -76,7 +76,7 @@ OligoMatchR <- function(OligoChecked, ampSize, target, GCtail = TRUE, outpath) {
           OligoMatched[iline+1,3] <- as.character(fmrOligoChecked$oligos[j])
           OligoMatched[iline+1,4] <- as.numeric(fmrOligoChecked$meanEndPos[j])
           OligoMatched[iline+1,5] <- ampLength
-          OligoMatched[iline+1,6] <- as.character(paste(OligoChecked$wbs[i], fmrOligoChecked$wbs[j], sep = " "))
+          OligoMatched[iline+1,6] <- as.numeric(mean(OligoChecked$wbs[i], fmrOligoChecked$wbs[j]))
         }
 
         if (ReadSens > 0) {
@@ -88,7 +88,7 @@ OligoMatchR <- function(OligoChecked, ampSize, target, GCtail = TRUE, outpath) {
           OligoMatched[iline+1,3] <- as.character(OligoChecked$oligos[i])
           OligoMatched[iline+1,4] <- as.numeric(OligoChecked$meanEndPos[i])
           OligoMatched[iline+1,5] <- ampLength
-          OligoMatched[iline+1,6] <- as.character(paste(fmrOligoChecked$wbs[j], OligoChecked$wbs[i], sep = " "))
+          OligoMatched[iline+1,6] <- as.numeric(mean(fmrOligoChecked$wbs[j], OligoChecked$wbs[i]))
         }
       }
     }# end j
@@ -106,9 +106,6 @@ OligoMatchR <- function(OligoChecked, ampSize, target, GCtail = TRUE, outpath) {
 
 
   }# end i
-  ### end DEV
-
-
 
   # tidy up:
   names(OligoMatched)=c("Forward","StartPos","Reverse","EndPos","AmpliconSize","wbs")
@@ -122,8 +119,24 @@ OligoMatchR <- function(OligoChecked, ampSize, target, GCtail = TRUE, outpath) {
   }
 
 
-  # check after GCtail removal:
+  # check after GCtail:
   if (nrow(OligoMatched)>0) {
+
+    # sort the primers output 'OligoMatched' by their probability of occurrences in sequences
+    # add 2 new fields for index calculation
+    OligoMatched$cumFreqF <- rep(NA,nrow(OligoMatched))
+    OligoMatched$cumFreqR <- rep(NA,nrow(OligoMatched))
+    # reattribute associated cumFreq values
+    for (i in 1:nrow(OligoMatched)) {
+      OligoMatched$cumFreqF[i] <- OligoChecked[grep(paste0("^",OligoMatched$Forward[i],"$"),
+                                                    OligoChecked$oligos),"cumFreq"]
+      OligoMatched$cumFreqR[i] <- OligoChecked[grep(paste0("^",revCompCase(OligoMatched$Reverse[i]),"$"),
+                                                    OligoChecked$oligos),"cumFreq"]
+    }
+    # reorder according to (cumFreqF+cumFreR)*(1-wbs) <-> probability of being found with strong nucleotides
+    OligoMatched$wbs[is.na(OligoMatched$wbs)] <- 0
+    OligoMatched$occ_score <- (OligoMatched$cumFreqF + OligoMatched$cumFreqR)*(1-OligoMatched$wbs)
+    OligoMatched <- OligoMatched[order(-OligoMatched$occ_score),]
 
     # -> oupath: save final objects in a folder ?
     if (!missing(outpath)) {
@@ -137,6 +150,7 @@ OligoMatchR <- function(OligoChecked, ampSize, target, GCtail = TRUE, outpath) {
                                        ampSize[1],"-",ampSize[2],
                                        "GCtail",substr(as.character(GCtail),1,1),".Rdata"))
     }
+
 
     t2 <- Sys.time()
     cat(paste0("Total function execution time: ",

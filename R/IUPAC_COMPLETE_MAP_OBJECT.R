@@ -3,6 +3,8 @@
 #' Creates a complete mapping of all nucleotides, as IUPAC_CODE_MAP from Biostrings, but including gaps as "-"
 #' and specifications to attribute degenerated code to nucleotides
 #' @usage Especially called in BuildConsensus function
+#' @importFrom gtools permutations
+#' @importFrom Biostrings IUPAC_CODE_MAP
 #' @export
 IUPAC_COMPLETE_MAP <- NULL
 IUPAC_CODE_MAP <- Biostrings::IUPAC_CODE_MAP

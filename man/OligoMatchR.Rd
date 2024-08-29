@@ -19,7 +19,7 @@ You should indicate the values as a numeric vector: (for example c(400,800) to t
 \item{outpath}{(optional) the path to the FOLDER in which the function outputs will be stored.}
 }
 \value{
-Another dataframe of the matching oligonucleotides couples with the given parameters. In this one, all the nucleotides are given in the 5'->3' orientation.
+Another dataframe of the matching oligonucleotides couples with the given parameters. In this one, all the nucleotides are given in the 5'->3' orientation. There are sorted in the 'probably most promising' order, according to 'occ_score' field value.
 }
 \description{
 This function allows to check if, among the oligonucleotides previously kept, some of them could constitute pairs to

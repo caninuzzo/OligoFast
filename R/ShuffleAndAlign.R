@@ -9,8 +9,8 @@
 #' Set 1 for no iteration, higher is the iteration number, stronger will be the results but higher will be the processing time.
 #' @param outpath (optional) the path to the FOLDER in which the function outputs will be stored.
 #' @return A list of clusters of aligned sequences (each cluster are MsaDNAMulipleAlignment object)
-#' @import Biostrings
-#' @import msa
+#' @importFrom Biostrings writeXStringSet DNAStringSet
+#' @importFrom msa msa
 #' @export
 #' @note This function may take some time to process, especially for long sequences, big dataset or high number of iterations.
 #' @examples

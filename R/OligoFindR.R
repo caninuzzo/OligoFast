@@ -10,7 +10,7 @@
 #' @param GCrange (mandatory, set to c(40,60) by default) the range (in %) of %GC content within the oligo.
 #' @param outpath (optional) the path to the FOLDER in which the function outputs will be stored.
 #' @return A dataframe with the oligonucleotides fulfilling the given parameters and kept from each clusters.
-#' @import data.table
+#' @importFrom data.table data.table rbindlist
 #' @export
 #' @examples
 #' \dontrun{
@@ -50,10 +50,8 @@ OligoFindR <- function(ConsensusClust, PriMin=18, PriMax=22, maxDeg=2, GCrange=c
   # if number of consensus to analyse <100: Nothing ; if 100-1000 : /10 ; if >1000 : /100. Then merge 'fragments'
   if (length(ConsensusClust)>100){
     frag <- 10
-    print("enter in loop frag=10")
     if (length(ConsensusClust)>1000){
       frag <- 100
-      print("enter in loop frag=100")
     }
     int_e <- length(ConsensusClust) %/% frag
     u1 <- seq(2, length(ConsensusClust), by = int_e)
@@ -62,8 +60,6 @@ OligoFindR <- function(ConsensusClust, PriMin=18, PriMax=22, maxDeg=2, GCrange=c
     if (length(u1) != length(u2)){
       u2 <- append(u2,length(ConsensusClust))
     }
-    print(paste0("u1:",u1))
-    print(paste0("u2:",u2))
     OligoFoundList <- list()
 
     for (F in 1:length(u1)){
@@ -80,8 +76,6 @@ OligoFindR <- function(ConsensusClust, PriMin=18, PriMax=22, maxDeg=2, GCrange=c
                                            row.names = NULL)
 
       for (e in u1[F]:u2[F]) {
-        print(paste0("enter in loop interval:",u1[F],":",u2[F]))
-
         # first display
         if (e==1){
           cat("Processing...")
@@ -214,7 +208,7 @@ OligoFindR <- function(ConsensusClust, PriMin=18, PriMax=22, maxDeg=2, GCrange=c
              as.numeric(round(difftime(t2, t1, units = "mins"),2)),
              " minutes"))
 
-  # -> oupath: save final objects in a folder ?
+  # -> outpath: save final objects in a folder ?
   if (!missing(outpath)){
     save(OligoFound, file = paste0(outpath,"/OligoFound_out_min",
                                    PriMin+1,"max",PriMax+1,"deg",maxDeg,

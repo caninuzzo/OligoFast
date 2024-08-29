@@ -5,7 +5,7 @@
 #' @param cut (mandatory) a numeric vector containing the start and the end (in bp) to define where to cut. Example: c(200,800) to keep only the region from 200bp to 800bp.
 #' @param outpath (optional) the path to the FOLDER in which the function outputs will be stored.
 #' @return a DNAStringSet object with the remaining parts of the amplicons or sequences.
-#' @import Biostrings
+#' @importFrom Biostrings subseq
 #' @export
 #' @examples
 #' \dontrun{

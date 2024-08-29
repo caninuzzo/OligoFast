@@ -1,6 +1,6 @@
 Package: OligoFast
 Title: An Easy Way To Design And Test Primers Couples
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     person(given = "Alexis",  family = "CANINO",  email = "alexis.canino13@gmail.com", role = c("aut", "cre","cph"),
            comment = c(ORCID = "0009-0001-3097-3562"))
@@ -8,5 +8,5 @@ Description: The main goal of this package is to help designing primers couples 
 License: MIT
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
-Imports: Biostrings, data.table, dplyr, ggplot2, gtools, msa, plyr, stringr
+RoxygenNote: 7.3.2
+Imports: Biostrings, data.table, dplyr, ggplot2, gtools, msa, plyr, pwalign, stringr

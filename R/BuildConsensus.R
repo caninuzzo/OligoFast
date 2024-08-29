@@ -14,7 +14,7 @@
 #' @param outpath (optional) the path to the FOLDER in which the function outputs will be stored.
 #' @param suppData (mandatory, set to FALSE by default) if TRUE, an object is created: a list of nucleotides frequency matrixes for each cluster
 #' @return A list of consensus sequences (character) resulting from each clusters.
-#' @import Biostrings
+#' @importFrom Biostrings consensusMatrix
 #' @export
 #' @examples
 #' \dontrun{
@@ -40,7 +40,7 @@ BuildConsensus <- function(AlignedClust, ntThresHi=0.9, ntThresLo=0.3, ignGap=FA
     freqData <- list()
   }
 
-  # -> Building consensus sequences:
+  # Building consensus sequences:
   ConsensusClust <- list()
   time_storage <- NULL
   for (e in 1:length(AlignedClust)) {

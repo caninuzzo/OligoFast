@@ -14,6 +14,8 @@
 #' @return Another dataframe of the remaining and most abundant oligonucleotides.
 #' @import dplyr
 #' @import ggplot2
+#' @importFrom pwalign stringDist
+#' @importFrom Biostrings BStringSet
 #' @export
 #' @examples
 #' \dontrun{
@@ -44,7 +46,7 @@ OligoCheckR <- function(OligoFound, filtGaps = TRUE, pOcc = 0.9, maxDeg = 1, plo
   cat("Processing... \n Merging occurrences of oligonucleotides and calculating weak bases score...")
   # remove the ones with gaps ('-') [optional but recommended]
   if (isTRUE(filtGaps)) {
-    OligoFound <- OligoFound[-which(grepl("-",OligoFound$oligos)),]
+    OligoFound <- OligoFound[!grep("-",OligoFound$oligos),]
   }
 
   ### lowercase characters treatment > merging > warning score > merging > adding Freq counts
@@ -57,26 +59,39 @@ OligoCheckR <- function(OligoFound, filtGaps = TRUE, pOcc = 0.9, maxDeg = 1, plo
   oligoLow <- OligoFound[grep("[a-z]",OligoFound$oligos),]
   oligoUP <- OligoFound[!grep("[a-z]",OligoFound$oligos),]
 
+
+  # if lowercases characters (FALSE when ignGap=T in consensus step)
   # calculate occurrences of each oligos and introduce wbs score
-  occOligoLow <- data.frame(table(oligoLow$oligos))
-  names(occOligoLow)[1] <- "oligos"
-  occOligoUP <- data.frame(table(oligoUP$oligos))
-  names(occOligoUP)[1] <- "oligos"
-  occOligoUP$wbs <- vector(mode = "character", length = nrow(occOligoUP))
+  if (nrow(oligoLow)>0) {
+    occOligoLow <- data.frame(table(oligoLow$oligos))
+    names(occOligoLow)[1] <- "oligos"
+    occOligoUP <- data.frame(table(oligoUP$oligos))
+    names(occOligoUP)[1] <- "oligos"
+    occOligoUP$wbs <- vector(mode = "character", length = nrow(occOligoUP))
 
-  # keep only 1% for lowercases dataframe (less data to process, remove 'small events')
-  occOligoLow <- occOligoLow %>% filter(Freq>round(0.01*nClusts))
-  occOligoUP <- occOligoUP %>% filter(Freq>round(0.01*nClusts))
+    # keep only 1% for lowercases dataframe (less data to process, remove 'small events')
+    occOligoUP <- occOligoUP %>% filter(Freq>round(0.01*nClusts))
 
- # cumul Freq when lowercases and uppercases oligos match:
-  for (i in occOligoLow$oligos){
-    # do it only when occurrence is detected (less data to process)
-    if (length(which(toupper(i) == occOligoUP$oligos))>0){
-      cumFreq <- occOligoUP$Freq[which(toupper(i) == occOligoUP$oligos)] + occOligoLow[occOligoLow$oligos==i,"Freq"]
-      occOligoUP$Freq[which(toupper(i) == occOligoUP$oligos)] <- cumFreq
-      occOligoUP$wbs[which(toupper(i) == occOligoUP$oligos)] <- (nchar(gsub("[^a-z]", "", i))*occOligoLow[occOligoLow$oligos==i,"Freq"])/(nchar(as.character(occOligoUP$oligos[which(toupper(i)==occOligoUP$oligos)]))*cumFreq)
+  #if (nrow(oligoLow)>0){
+    occOligoLow <- occOligoLow %>% filter(Freq>round(0.01*nClusts))
+    # cumul Freq when lowercases and uppercases oligos match:
+    for (i in occOligoLow$oligos){
+      # do it only when occurrence is detected (less data to process)
+      if (length(which(toupper(i) == occOligoUP$oligos))>0){
+        cumFreq <- occOligoUP$Freq[which(toupper(i) == occOligoUP$oligos)] + occOligoLow[occOligoLow$oligos==i,"Freq"]
+        occOligoUP$Freq[which(toupper(i) == occOligoUP$oligos)] <- cumFreq
+        occOligoUP$wbs[which(toupper(i) == occOligoUP$oligos)] <- (nchar(gsub("[^a-z]", "", i))*occOligoLow[occOligoLow$oligos==i,"Freq"])/(nchar(as.character(occOligoUP$oligos[which(toupper(i)==occOligoUP$oligos)]))*cumFreq)
+      }
     }
+  } else {
+    occOligoUP <- data.frame(table(oligoUP$oligos))
+    names(occOligoUP)[1] <- "oligos"
+    occOligoUP$wbs <- vector(mode = "character", length = nrow(occOligoUP))
+    # keep only 1% for lowercases dataframe (less data to process, remove 'small events')
+    occOligoUP <- occOligoUP %>% filter(Freq>round(0.01*nClusts))
+    rm(oligoLow)
   }
+
   # preparing field
   occOligoUP$length <- apply(occOligoUP["oligos"],1,nchar)
   colnames(occOligoUP)[colnames(occOligoUP) == "Freq"] <- "cumFreq"
@@ -98,9 +113,13 @@ OligoCheckR <- function(OligoFound, filtGaps = TRUE, pOcc = 0.9, maxDeg = 1, plo
     for (s in min(occOligoUP$length):max(occOligoUP$length)) {
       e <- e+1
       OligoStorage[[e]] <- occOligoUP %>% filter(length==s)
-      disttest_fmr <- stringDist(BStringSet(OligoStorage[[e]]$oligos), method = "hamming")
+      disttest_fmr <- pwalign::stringDist(Biostrings::BStringSet(OligoStorage[[e]]$oligos), method = "hamming")
+      gc()
       couples_fmr <- which(as.matrix(disttest_fmr)<=maxDeg & as.matrix(disttest_fmr)>0, arr.ind = TRUE)
+      gc()
+      rm(disttest_fmr)
       uniq_pairs_fmr <- couples_fmr[couples_fmr[,1] < couples_fmr[,2],]
+      rm(couples_fmr)
 
       # cumul the freq of the oligo clustered together
       stor_list <- list()
@@ -124,6 +143,7 @@ OligoCheckR <- function(OligoFound, filtGaps = TRUE, pOcc = 0.9, maxDeg = 1, plo
       } else { # end if nrow
         OligoStored[[e]] <- OligoStorage_fmr
       }
+      gc()
     }
 
     # merge each df of the list to a single and big df:

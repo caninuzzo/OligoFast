@@ -3,7 +3,7 @@
 #' Load a FASTA file and convert it to a DNA list (DNAStringSet object from Biostrings package).
 #' @param fasta The path of the FASTA file to load in R.
 #' @return A DNAStringSet object (list of DNA sequences).
-#' @import Biostrings
+#' @importFrom Biostrings readBStringSet DNAStringSet
 #' @export
 #' @examples
 #' \dontrun{

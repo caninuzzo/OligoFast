@@ -9,7 +9,8 @@
 #' @param mmCalc (mandatory, set to 2 by default) the number of mismatches used in the primers used in the in silico PCR process.
 #' @param outpath (optional) the path to the FOLDER in which the function outputs will be stored.
 #' @return A dataframe showing the number of sequences amplified from each dataset and a specificity score of the primers couples.
-#' @import Biostrings
+#' @importFrom Biostrings vcountPattern
+#' @importFrom dplyr intersect
 #' @export
 #' @examples
 #' \dontrun{
@@ -25,6 +26,20 @@ OligoSpecR <- function(PrimersCouples, TargetSeq, AvoidSeq, mmCalc = 2, outpath)
   # start time counter
   t1 <- Sys.time()
   cat("Processing...")
+
+  # check the presence of "NNNNNNNNNN" in 'target' sequences dataset (10 successive N)
+  if (length(grep("NNNNNNNNNN",as.character(TargetSeq)))>0){
+    cat("\r", length(grep("NNNNNNNNNN",as.character(TargetSeq))),
+        "sequences with 10 consecutive 'N' or more were removed from dataset of target sequences.")
+    TargetSeq <- TargetSeq[-grep("NNNNNNNNNN",as.character(TargetSeq))]
+  }
+
+  # check the presence of "NNNNNNNNNN" in 'avoid' sequences dataset(10 successive N)
+  if (length(grep("NNNNNNNNNN",as.character(AvoidSeq)))>0){
+    cat("\r", length(grep("NNNNNNNNNN",as.character(AvoidSeq))),
+        "sequences with 10 consecutive 'N' or more were removed from the dataset of sequences to avoid.")
+    AvoidSeq <- AvoidSeq[-grep("NNNNNNNNNN",as.character(AvoidSeq))]
+  }
 
   if (class(PrimersCouples)=="data.frame") {
 
@@ -43,16 +58,16 @@ OligoSpecR <- function(PrimersCouples, TargetSeq, AvoidSeq, mmCalc = 2, outpath)
       reverse <- toupper(OligoFast::revCompCase(PrimersCouples$Reverse[i]))
 
       ### Test primers couples on TARGET sequences:
-      fmr_amp <- intersect(which(Biostrings::vcountPattern(forward, TargetSeq, max.mismatch = mmCalc, fixed = FALSE)==1),
-                           which(Biostrings::vcountPattern(reverse, TargetSeq, max.mismatch = mmCalc, fixed = FALSE)==1))
+      fmr_amp <- dplyr::intersect(which(Biostrings::vcountPattern(forward, TargetSeq, max.mismatch = mmCalc, fixed = FALSE)==1),
+                                  which(Biostrings::vcountPattern(reverse, TargetSeq, max.mismatch = mmCalc, fixed = FALSE)==1))
 
       # target amplification score
       OligoSpecResults$Target[i] <- paste0(length(TargetSeq[fmr_amp]),"/",length(TargetSeq))
       targSpec <- length(TargetSeq[fmr_amp])/length(TargetSeq)
 
       ### Test primers couples on sequences TO AVOID:
-      fmr_amp <- intersect(which(Biostrings::vcountPattern(forward, AvoidSeq, max.mismatch = mmCalc, fixed = FALSE)==1),
-                           which(Biostrings::vcountPattern(reverse, AvoidSeq, max.mismatch = mmCalc, fixed = FALSE)==1))
+      fmr_amp <- dplyr::intersect(which(Biostrings::vcountPattern(forward, AvoidSeq, max.mismatch = mmCalc, fixed = FALSE)==1),
+                                  which(Biostrings::vcountPattern(reverse, AvoidSeq, max.mismatch = mmCalc, fixed = FALSE)==1))
 
       # target amplification score
       OligoSpecResults$Avoid[i] <- paste0(length(AvoidSeq[fmr_amp]),"/",length(AvoidSeq))
@@ -97,8 +112,8 @@ OligoSpecR <- function(PrimersCouples, TargetSeq, AvoidSeq, mmCalc = 2, outpath)
       OligoSpecResults$primers_couples[1] <- paste0(PrimersCouples[1], " / ", PrimersCouples[2])
 
       ### Test primers couples on TARGET sequences:
-      fmr_amp <- intersect(which(Biostrings::vcountPattern(forward, TargetSeq, max.mismatch = mmCalc, fixed = FALSE)==1),
-                           which(Biostrings::vcountPattern(reverse, TargetSeq, max.mismatch = mmCalc, fixed = FALSE)==1))
+      fmr_amp <- dplyr::intersect(which(Biostrings::vcountPattern(forward, TargetSeq, max.mismatch = mmCalc, fixed = FALSE)==1),
+                                  which(Biostrings::vcountPattern(reverse, TargetSeq, max.mismatch = mmCalc, fixed = FALSE)==1))
 
 
       # target amplification score
@@ -106,8 +121,8 @@ OligoSpecR <- function(PrimersCouples, TargetSeq, AvoidSeq, mmCalc = 2, outpath)
       targSpec <- length(TargetSeq[fmr_amp])/length(TargetSeq)
 
       ### Test primers couples on sequences TO AVOID:
-      fmr_amp <- intersect(which(Biostrings::vcountPattern(forward, AvoidSeq, max.mismatch = mmCalc, fixed = FALSE)==1),
-                           which(Biostrings::vcountPattern(reverse, AvoidSeq, max.mismatch = mmCalc, fixed = FALSE)==1))
+      fmr_amp <- dplyr::intersect(which(Biostrings::vcountPattern(forward, AvoidSeq, max.mismatch = mmCalc, fixed = FALSE)==1),
+                                  which(Biostrings::vcountPattern(reverse, AvoidSeq, max.mismatch = mmCalc, fixed = FALSE)==1))
 
       # target amplification score
       OligoSpecResults$Avoid[1] <- paste0(length(AvoidSeq[fmr_amp]),"/",length(AvoidSeq))
