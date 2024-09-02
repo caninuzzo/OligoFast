@@ -117,7 +117,7 @@ OligoTestR <- function(DNAList, PrimersCouples, mmCalc = 2, outpath) {
            }
            # when, due to mmCalc>0, endR is over real sequence end, adjust it to avoid error:
            if (length(which(DNAList@ranges@width[fmr_amp]<endR))>0){
-            endR[which(DNAList@ranges@width[fmr_amp]<endR)] <- endR[DNAList@ranges@width[fmr_amp]<endR)] - mmCalc
+            endR[which(DNAList@ranges@width[fmr_amp]<endR)] <- endR[which(DNAList@ranges@width[fmr_amp]<endR)] - mmCalc
            }
            # keep the amplicon only if there are for the mmCalc value given
            if (length(fmr_amp)>0) {
