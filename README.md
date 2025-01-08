@@ -68,7 +68,7 @@ After running the pipeline several times with different datasets and confronting
 **Previous versions:**
 
 - *v.0.1.1* (current) 28.08.2024
-- *v.0.1.0* (current) 05.07.2024
+- *v.0.1.0*, 05.07.2024
 - *v.0.0.1* first release, 22.04.2024
 
 
